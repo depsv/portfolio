@@ -33,3 +33,16 @@ export async function updateSection<K extends keyof PortfolioData>(
   return savePortfolioData(data);
 }
 
+export async function exportData(): Promise<string> {
+  return JSON.stringify(await getPortfolioData(), null, 2);
+}
+
+export async function importData(jsonString: string): Promise<boolean> {
+  try {
+    const parsed = JSON.parse(jsonString);
+    return savePortfolioData(parsed);
+  } catch {
+    return false;
+  }
+}
+

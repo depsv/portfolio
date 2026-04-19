@@ -24,12 +24,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/admin/login");
+    router.push("/login");
     router.refresh();
   };
 
-  const handleExport = () => {
-    const data = exportData();
+  const handleExport = async () => {
+    const data = await exportData();
     const blob = new Blob([data], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -47,9 +47,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       const file = (e.target as HTMLInputElement).files?.[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = (ev) => {
+      reader.onload = async (ev) => {
         const result = ev.target?.result as string;
-        if (importData(result)) {
+        if (await importData(result)) {
           window.location.reload();
         } else {
           alert("Invalid JSON file");
