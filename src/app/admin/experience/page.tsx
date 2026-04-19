@@ -15,11 +15,11 @@ export default function AdminExperience() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
-  useEffect(() => { setItems(getPortfolioData().experience); }, []);
+  useEffect(() => { getPortfolioData().then(d => setItems(d.experience)); }, []);
 
-  const save = () => {
-    const data = getPortfolioData();
-    savePortfolioData({ ...data, experience: items });
+  const save = async () => {
+    const data = await getPortfolioData();
+    await savePortfolioData({ ...data, experience: items });
     setSaved(true); setTimeout(() => setSaved(false), 2000);
   };
 

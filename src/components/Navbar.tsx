@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, Code2, Settings } from "lucide-react";
+import { Menu, X, Code2 } from "lucide-react";
 
 const navLinks = [
   { href: "#experience", label: "Experience" },
@@ -57,18 +57,7 @@ export default function Navbar({ name }: { name: string }) {
               {link.label}
             </a>
           ))}
-          <Link
-            href="/admin"
-            className="ml-3 flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
-            style={{
-              background: "rgba(168,85,247,0.12)",
-              border: "1px solid rgba(168,85,247,0.25)",
-              color: "rgba(168,85,247,0.9)",
-            }}
-          >
-            <Settings size={14} />
-            CMS
-          </Link>
+
         </div>
 
         {/* Mobile menu button */}
@@ -95,14 +84,7 @@ export default function Navbar({ name }: { name: string }) {
               {link.label}
             </a>
           ))}
-          <Link
-            href="/admin"
-            onClick={() => setOpen(false)}
-            className="py-3 px-4 rounded-lg text-sm font-medium flex items-center gap-2"
-            style={{ background: "rgba(168,85,247,0.1)", color: "rgba(168,85,247,0.9)" }}
-          >
-            <Settings size={14} /> CMS Admin
-          </Link>
+
         </div>
       )}
     </header>

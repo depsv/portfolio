@@ -12,11 +12,11 @@ export default function AdminContact() {
   const [contact, setContact] = useState<Contact>(defaultContact);
   const [saved, setSaved] = useState(false);
 
-  useEffect(() => { setContact(getPortfolioData().contact); }, []);
+  useEffect(() => { getPortfolioData().then(d => setContact(d.contact)); }, []);
 
-  const save = () => {
-    const data = getPortfolioData();
-    savePortfolioData({ ...data, contact });
+  const save = async () => {
+    const data = await getPortfolioData();
+    await savePortfolioData({ ...data, contact });
     setSaved(true); setTimeout(() => setSaved(false), 2000);
   };
 

@@ -3,9 +3,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Briefcase, FolderKanban, GraduationCap,
-  Award, Zap, Phone, ArrowLeft, Settings, Download, Upload
+  Award, Zap, Phone, ArrowLeft, Settings, Download, Upload, LogOut
 } from "lucide-react";
 import { exportData, importData } from "@/lib/storage";
+import { useRouter } from "next/navigation";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -19,6 +20,13 @@ const navItems = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/admin/login");
+    router.refresh();
+  };
 
   const handleExport = () => {
     const data = exportData();
@@ -107,6 +115,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             style={{ background: "transparent", color: "rgba(255,255,255,0.35)" }}>
             <ArrowLeft size={14} /> View Portfolio
           </Link>
+          <button onClick={handleLogout}
+            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
+            style={{ background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.15)", color: "rgba(239,68,68,0.7)" }}>
+            <LogOut size={14} /> Logout
+          </button>
         </div>
       </aside>
 

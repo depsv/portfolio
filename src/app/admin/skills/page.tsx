@@ -12,11 +12,11 @@ export default function AdminSkills() {
   const [items, setItems] = useState<Skill[]>([]);
   const [saved, setSaved] = useState(false);
 
-  useEffect(() => { setItems(getPortfolioData().skills); }, []);
+  useEffect(() => { getPortfolioData().then(d => setItems(d.skills)); }, []);
 
-  const save = () => {
-    const data = getPortfolioData();
-    savePortfolioData({ ...data, skills: items });
+  const save = async () => {
+    const data = await getPortfolioData();
+    await savePortfolioData({ ...data, skills: items });
     setSaved(true); setTimeout(() => setSaved(false), 2000);
   };
 

@@ -17,11 +17,11 @@ export default function AdminProjects() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
-  useEffect(() => { setItems(getPortfolioData().projects); }, []);
+  useEffect(() => { getPortfolioData().then(d => setItems(d.projects)); }, []);
 
-  const save = () => {
-    const data = getPortfolioData();
-    savePortfolioData({ ...data, projects: items });
+  const save = async () => {
+    const data = await getPortfolioData();
+    await savePortfolioData({ ...data, projects: items });
     setSaved(true); setTimeout(() => setSaved(false), 2000);
   };
 

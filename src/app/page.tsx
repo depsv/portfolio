@@ -16,7 +16,7 @@ export default function HomePage() {
   const [data, setData] = useState<PortfolioData>(defaultData);
 
   useEffect(() => {
-    setData(getPortfolioData());
+    getPortfolioData().then(setData);
   }, []);
 
   return (

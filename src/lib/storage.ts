@@ -1,43 +1,35 @@
 import { PortfolioData } from "@/types";
 import { defaultData } from "./data";
 
-const STORAGE_KEY = "portfolio_data";
-
-export function getPortfolioData(): PortfolioData {
-  if (typeof window === "undefined") return defaultData;
+export async function getPortfolioData(): Promise<PortfolioData> {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return defaultData;
-    return { ...defaultData, ...JSON.parse(stored) };
+    const res = await fetch("/api/portfolio", { cache: "no-store" });
+    if (!res.ok) return defaultData;
+    return res.json();
   } catch {
     return defaultData;
   }
 }
 
-export function savePortfolioData(data: PortfolioData): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-export function updateSection<K extends keyof PortfolioData>(
-  section: K,
-  value: PortfolioData[K]
-): void {
-  const data = getPortfolioData();
-  data[section] = value;
-  savePortfolioData(data);
-}
-
-export function exportData(): string {
-  return JSON.stringify(getPortfolioData(), null, 2);
-}
-
-export function importData(jsonString: string): boolean {
+export async function savePortfolioData(data: PortfolioData): Promise<boolean> {
   try {
-    const parsed = JSON.parse(jsonString);
-    savePortfolioData(parsed);
-    return true;
+    const res = await fetch("/api/portfolio/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    return res.ok;
   } catch {
     return false;
   }
 }
+
+export async function updateSection<K extends keyof PortfolioData>(
+  section: K,
+  value: PortfolioData[K]
+): Promise<boolean> {
+  const data = await getPortfolioData();
+  data[section] = value;
+  return savePortfolioData(data);
+}
+

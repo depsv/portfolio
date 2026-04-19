@@ -10,10 +10,10 @@ export default function AdminDashboard() {
   const [data, setData] = useState<PortfolioData>(defaultData);
   const [saved, setSaved] = useState(false);
 
-  useEffect(() => { setData(getPortfolioData()); }, []);
+  useEffect(() => { getPortfolioData().then(setData); }, []);
 
-  const handleSave = () => {
-    savePortfolioData(data);
+  const handleSave = async () => {
+    await savePortfolioData(data);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };

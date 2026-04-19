@@ -14,11 +14,11 @@ export default function AdminCertificates() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
-  useEffect(() => { setItems(getPortfolioData().certificates); }, []);
+  useEffect(() => { getPortfolioData().then(d => setItems(d.certificates)); }, []);
 
-  const save = () => {
-    const data = getPortfolioData();
-    savePortfolioData({ ...data, certificates: items });
+  const save = async () => {
+    const data = await getPortfolioData();
+    await savePortfolioData({ ...data, certificates: items });
     setSaved(true); setTimeout(() => setSaved(false), 2000);
   };
 

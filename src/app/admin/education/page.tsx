@@ -15,11 +15,11 @@ export default function AdminEducation() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
-  useEffect(() => { setItems(getPortfolioData().education); }, []);
+  useEffect(() => { getPortfolioData().then(d => setItems(d.education)); }, []);
 
-  const save = () => {
-    const data = getPortfolioData();
-    savePortfolioData({ ...data, education: items });
+  const save = async () => {
+    const data = await getPortfolioData();
+    await savePortfolioData({ ...data, education: items });
     setSaved(true); setTimeout(() => setSaved(false), 2000);
   };
 
