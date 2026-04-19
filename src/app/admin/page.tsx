@@ -3,14 +3,32 @@ import { useEffect, useState } from "react";
 import { getPortfolioData, savePortfolioData } from "@/lib/storage";
 import { PortfolioData } from "@/types";
 import { defaultData } from "@/lib/data";
-import { User, Code2, CheckCircle2, Eye } from "lucide-react";
+import { User, Code2, CheckCircle2, Eye, Upload, ImageIcon } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminDashboard() {
   const [data, setData] = useState<PortfolioData>(defaultData);
   const [saved, setSaved] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => { getPortfolioData().then(setData); }, []);
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const json = await res.json();
+      if (json.url) {
+        setData({ ...data, profile: { ...data.profile, avatar: json.url } });
+      }
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSave = async () => {
     await savePortfolioData(data);
@@ -90,9 +108,28 @@ export default function AdminDashboard() {
               onChange={(e) => setData({ ...data, profile: { ...data.profile, bio: e.target.value } })} />
           </div>
           <div>
-            <label className="cms-label">Avatar URL</label>
-            <input className="cms-input" placeholder="https://..." value={data.profile.avatar || ""}
-              onChange={(e) => setData({ ...data, profile: { ...data.profile, avatar: e.target.value } })} />
+            <label className="cms-label">Avatar</label>
+            <div className="flex items-center gap-3">
+              {data.profile.avatar && (
+                <img src={data.profile.avatar} alt="avatar" className="w-14 h-14 rounded-full object-cover flex-shrink-0"
+                  style={{ border: "2px solid rgba(168,85,247,0.3)" }} />
+              )}
+              {!data.profile.avatar && (
+                <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ background: "rgba(255,255,255,0.05)", border: "2px dashed rgba(255,255,255,0.15)" }}>
+                  <ImageIcon size={18} style={{ color: "rgba(255,255,255,0.3)" }} />
+                </div>
+              )}
+              <div className="flex-1 flex flex-col gap-2">
+                <label className="btn-ghost flex items-center gap-2 text-sm px-3 py-2 cursor-pointer w-fit">
+                  <Upload size={14} />
+                  {uploading ? "Uploading..." : "Upload Photo"}
+                  <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} disabled={uploading} />
+                </label>
+                <input className="cms-input text-xs" placeholder="atau paste URL langsung..." value={data.profile.avatar || ""}
+                  onChange={(e) => setData({ ...data, profile: { ...data.profile, avatar: e.target.value } })} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
